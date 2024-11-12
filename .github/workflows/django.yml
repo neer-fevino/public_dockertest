@@ -16,12 +16,11 @@ jobs:
     - name: Set up SSH key
       run: |
         mkdir -p ~/.ssh
-        echo "$SSH_PRIVATE_KEY_SERVER" > ~/.ssh/id_rsa  # Use the private key from GitHub secrets
+        echo "${{ secrets.SSH_PRIVATE_KEY_SERVER }}" > ~/.ssh/id_rsa  # Use the private key from GitHub secrets
         chmod 600 ~/.ssh/id_rsa  # Set permissions on the private key
         ssh-keyscan -H fevino.co >> ~/.ssh/known_hosts  # Add server's SSH key to known_hosts
 
     - name: Push code to server
       run: |
         ssh -i ~/.ssh/id_rsa -p 22 root@fevino.co "cd /home/cicd_test_tmp/public_dockertest/ && git pull origin main"
-      env:
-        SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}  # Fetch the private key from GitHub Secrets
+     
