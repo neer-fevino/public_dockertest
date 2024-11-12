@@ -1,0 +1,27 @@
+name: Deploy to Server
+
+on:
+  push:
+    branches:
+      - main  # Trigger the workflow when pushing to the 'main' branch
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest  # Using GitHub's latest Ubuntu runner
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2  # Checkout the code from GitHub
+
+    - name: Set up SSH key
+      run: |
+        mkdir -p ~/.ssh
+        echo "$SSH_PRIVATE_KEY_SERVER" > ~/.ssh/id_rsa  # Use the private key from GitHub secrets
+        chmod 600 ~/.ssh/id_rsa  # Set permissions on the private key
+        ssh-keyscan -H fevino.co >> ~/.ssh/known_hosts  # Add server's SSH key to known_hosts
+
+    - name: Push code to server
+      run: |
+        ssh -i ~/.ssh/id_rsa root@fevino.co "cd /home/cicd_test_tmp/public_dockertest/ && git pull origin main"
+      env:
+        SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}  # Fetch the private key from GitHub Secrets
