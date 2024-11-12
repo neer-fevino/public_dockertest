@@ -22,6 +22,6 @@ jobs:
 
     - name: Push code to server
       run: |
-        ssh -i ~/.ssh/id_rsa root@fevino.co "cd /home/cicd_test_tmp/public_dockertest/ && git pull origin main"
+        ssh -i ~/.ssh/id_rsa -p 22 root@fevino.co "cd /home/cicd_test_tmp/public_dockertest/ && git pull origin main"
       env:
         SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}  # Fetch the private key from GitHub Secrets
